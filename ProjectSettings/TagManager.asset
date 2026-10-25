@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - pick_me
+  - ammo_gun
+  - target
+  - ammo_automatic_gun
+  - ammo_grenade
   layers:
   - Default
   - TransparentFX
