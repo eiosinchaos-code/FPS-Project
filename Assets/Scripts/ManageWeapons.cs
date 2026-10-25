@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class ManageWeapons : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class ManageWeapons : MonoBehaviour
     RaycastHit hit;
     public GameObject sparksAtImpact;
 
-    // Multi-weapon variables
     private const int WEAPON_GUN = 0;
     private const int WEAPON_AUTO_GUN = 1;
     private const int WEAPON_GRENADE = 2;
@@ -20,19 +20,22 @@ public class ManageWeapons : MonoBehaviour
     private bool[] hasWeapon;
     private int[] ammos;
     private int[] maxAmmos;
+    private int[] baseMaxAmmos;
     private float[] reloadTime;
+    private float[] baseReloadTimes;
     private string[] weaponName;
 
-    public GameObject grenade; // Fixed spelling from 'greande' to 'grenade'
+    public GameObject grenade;
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         playersCamera = GetComponent<Camera>();
         ammos = new int[3];
         hasWeapon = new bool[3];
         maxAmmos = new int[3];
+        baseMaxAmmos = new int[3];
         reloadTime = new float[3];
+        baseReloadTimes = new float[3];
         weaponName = new string[3];
 
         hasWeapon[WEAPON_GUN] = true;
@@ -43,29 +46,42 @@ public class ManageWeapons : MonoBehaviour
         weaponName[WEAPON_AUTO_GUN] = "AUTOMATIC GUN";
         weaponName[WEAPON_GRENADE] = "GRENADE";
 
-        ammos[WEAPON_GUN] = 10;
-        ammos[WEAPON_AUTO_GUN] = 10;
-        ammos[WEAPON_GRENADE] = 10;
+        // Set lowest default starting ammo (2 rounds)
+        ammos[WEAPON_GUN] = 2;
+        ammos[WEAPON_AUTO_GUN] = 2;
+        ammos[WEAPON_GRENADE] = 2;
 
-        maxAmmos[WEAPON_GUN] = 20;
-        maxAmmos[WEAPON_AUTO_GUN] = 20;
-        maxAmmos[WEAPON_GRENADE] = 10;
+        baseMaxAmmos[WEAPON_GUN] = 2;
+        baseMaxAmmos[WEAPON_AUTO_GUN] = 2;
+        baseMaxAmmos[WEAPON_GRENADE] = 2;
+
+        maxAmmos[WEAPON_GUN] = baseMaxAmmos[WEAPON_GUN];
+        maxAmmos[WEAPON_AUTO_GUN] = baseMaxAmmos[WEAPON_AUTO_GUN];
+        maxAmmos[WEAPON_GRENADE] = baseMaxAmmos[WEAPON_GRENADE];
 
         currentWeapon = WEAPON_GUN;
 
-        reloadTime[WEAPON_GUN] = 2.0f;
-        reloadTime[WEAPON_AUTO_GUN] = 0.5f;
-        reloadTime[WEAPON_GRENADE] = 3.0f;
+        baseReloadTimes[WEAPON_GUN] = 2.0f;
+        baseReloadTimes[WEAPON_AUTO_GUN] = 0.5f;
+        baseReloadTimes[WEAPON_GRENADE] = 3.0f;
+
+        reloadTime[WEAPON_GUN] = baseReloadTimes[WEAPON_GUN];
+        reloadTime[WEAPON_AUTO_GUN] = baseReloadTimes[WEAPON_AUTO_GUN];
+        reloadTime[WEAPON_GRENADE] = baseReloadTimes[WEAPON_GRENADE];
 
         UpdateUI();
     }
 
-    // Update is called once per frame
+    void Start()
+    {
+    }
+
     void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         if (playersCamera == null) return;
 
-        // Handle reload / fire rate timer
         if (timerStarted)
         {
             timer += Time.deltaTime;
@@ -76,23 +92,17 @@ public class ManageWeapons : MonoBehaviour
             }
         }
 
-        // Setup ray from center of screen
         rayFromPlayer = playersCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-        Debug.DrawRay(rayFromPlayer.origin, rayFromPlayer.direction * 100, Color.red);
 
-        // Shooting input (F key) - Changed to GetKeyDown so it doesn't fire continuously unless intended, 
-        // but kept structure matching your preference.
         if (Input.GetKeyDown(KeyCode.F))
         {
             if (ammos[currentWeapon] >= 1 && canShoot)
             {
-                // Play gunshot/fire sound effect
                 if (GetComponent<AudioSource>() != null)
                 {
                     GetComponent<AudioSource>().Play();
                 }
 
-                // Check if current weapon is the GRENADE launcher
                 if (currentWeapon == WEAPON_GRENADE)
                 {
                     ammos[currentWeapon]--;
@@ -100,37 +110,30 @@ public class ManageWeapons : MonoBehaviour
                     if (launcher != null && grenade != null)
                     {
                         GameObject grenadeF = Instantiate(grenade, launcher.transform.position, Quaternion.identity);
-                        if (grenadeF.GetComponent<Rigidbody>() != null)
+                        Rigidbody rb = grenadeF.GetComponent<Rigidbody>();
+                        if (rb != null)
                         {
-                            grenadeF.GetComponent<Rigidbody>().AddForce(launcher.transform.forward * 200);
+                            rb.useGravity = true;
+                            rb.linearDamping = 0.1f;
+                            rb.AddForce(launcher.transform.forward * 80 + Vector3.up * 40, ForceMode.Impulse);
                         }
                     }
-                    else
-                    {
-                        Debug.LogWarning("Launcher or Grenade prefab is missing!");
-                    }
                 }
-                else // Standard Raycast Weapons (Gun / Auto Gun)
+                else
                 {
                     ammos[currentWeapon]--;
 
                     if (Physics.Raycast(rayFromPlayer, out hit, 100))
                     {
-                        print("YOU SHOT: " + hit.collider.gameObject.name + " WITH TAG: " + hit.collider.tag);
-
-                        Vector3 positionOfImpact = hit.point;
                         if (sparksAtImpact != null)
                         {
-                            Instantiate(sparksAtImpact, positionOfImpact, Quaternion.identity);
+                            Instantiate(sparksAtImpact, hit.point, Quaternion.identity);
                         }
 
                         if (hit.collider.CompareTag("target"))
                         {
                             ManageNPC npc = hit.collider.GetComponent<ManageNPC>();
-                            if (npc != null)
-                            {
-                                npc.gotHit();
-                            }
+                            if (npc != null) npc.gotHit();
                         }
                     }
                 }
@@ -138,42 +141,33 @@ public class ManageWeapons : MonoBehaviour
                 canShoot = false;
                 timer = 0.0f;
                 timerStarted = true;
-                print("You have " + ammos[currentWeapon] + " " + weaponName[currentWeapon] + " bullets left");
-
                 UpdateUI();
-            }
-            else
-            {
-                print("Out of ammo or weapon is reloading!");
             }
         }
 
-        // Weapon switching input (Tab key)
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (hasWeapon[WEAPON_GUN] && hasWeapon[WEAPON_AUTO_GUN] && hasWeapon[WEAPON_GRENADE])
-            {
-                currentWeapon++;
-                if (currentWeapon > 2) currentWeapon = 0;
-            }
-            else if (hasWeapon[WEAPON_GUN] && hasWeapon[WEAPON_AUTO_GUN])
-            {
-                if (currentWeapon == WEAPON_GUN) currentWeapon = WEAPON_AUTO_GUN;
-                else currentWeapon = WEAPON_GUN;
-            }
-            else if (hasWeapon[WEAPON_GUN] && hasWeapon[WEAPON_GRENADE])
-            {
-                if (currentWeapon == WEAPON_GUN) currentWeapon = WEAPON_GRENADE;
-                else currentWeapon = WEAPON_GUN;
-            }
-            else if (hasWeapon[WEAPON_AUTO_GUN] && hasWeapon[WEAPON_GRENADE])
-            {
-                if (currentWeapon == WEAPON_AUTO_GUN) currentWeapon = WEAPON_GRENADE;
-                else currentWeapon = WEAPON_AUTO_GUN;
-            }
-
-            print("Current Weapon: " + weaponName[currentWeapon] + " (" + ammos[currentWeapon] + ")");
+            currentWeapon = (currentWeapon + 1) % 3;
             UpdateUI();
+        }
+    }
+
+    public void SetExactMaxAmmo(int exactRounds)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            baseMaxAmmos[i] = exactRounds;
+            maxAmmos[i] = baseMaxAmmos[i];
+            if (ammos[i] > maxAmmos[i]) ammos[i] = maxAmmos[i];
+        }
+        UpdateUI();
+    }
+
+    public void SetReloadTimeModifier(float modifier)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            reloadTime[i] = baseReloadTimes[i] * modifier;
         }
     }
 
@@ -198,16 +192,41 @@ public class ManageWeapons : MonoBehaviour
         }
     }
 
-    // Helper method to safely update your UI text element
     void UpdateUI()
     {
         GameObject uiObject = GameObject.Find("userInfo");
         if (uiObject != null)
         {
-            TMP_Text uiText = uiObject.GetComponent<TMP_Text>();
-            if (uiText != null)
+            TMP_Text tmpText = uiObject.GetComponent<TMP_Text>();
+            if (tmpText != null)
             {
-                uiText.text = weaponName[currentWeapon] + "(" + ammos[currentWeapon] + ")";
+                tmpText.text = weaponName[currentWeapon] + " Ammo: " + ammos[currentWeapon];
+            }
+            else
+            {
+                Text legacyText = uiObject.GetComponent<Text>();
+                if (legacyText != null)
+                {
+                    legacyText.text = weaponName[currentWeapon] + " Ammo: " + ammos[currentWeapon];
+                }
+            }
+        }
+
+        GameObject maxAmmoObj = GameObject.Find("maxAmmoText");
+        if (maxAmmoObj != null)
+        {
+            TMP_Text maxTmp = maxAmmoObj.GetComponent<TMP_Text>();
+            if (maxTmp != null)
+            {
+                maxTmp.text = "Max Ammos: Gun(" + maxAmmos[WEAPON_GUN] + ") Auto(" + maxAmmos[WEAPON_AUTO_GUN] + ") Grenade(" + maxAmmos[WEAPON_GRENADE] + ")";
+            }
+            else
+            {
+                Text maxLegacy = maxAmmoObj.GetComponent<Text>();
+                if (maxLegacy != null)
+                {
+                    maxLegacy.text = "Max Ammos: Gun(" + maxAmmos[WEAPON_GUN] + ") Auto(" + maxAmmos[WEAPON_AUTO_GUN] + ") Grenade(" + maxAmmos[WEAPON_GRENADE] + ")";
+                }
             }
         }
     }
