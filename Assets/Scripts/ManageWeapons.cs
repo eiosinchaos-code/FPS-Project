@@ -30,6 +30,11 @@ public class ManageWeapons : MonoBehaviour
     void Awake()
     {
         playersCamera = GetComponent<Camera>();
+        if (playersCamera == null)
+        {
+            playersCamera = GetComponentInChildren<Camera>();
+        }
+
         ammos = new int[3];
         hasWeapon = new bool[3];
         maxAmmos = new int[3];
@@ -46,7 +51,7 @@ public class ManageWeapons : MonoBehaviour
         weaponName[WEAPON_AUTO_GUN] = "AUTOMATIC GUN";
         weaponName[WEAPON_GRENADE] = "GRENADE";
 
-        // Set lowest default starting ammo (2 rounds)
+        // Starting ammo
         ammos[WEAPON_GUN] = 2;
         ammos[WEAPON_AUTO_GUN] = 2;
         ammos[WEAPON_GRENADE] = 2;
@@ -68,12 +73,11 @@ public class ManageWeapons : MonoBehaviour
         reloadTime[WEAPON_GUN] = baseReloadTimes[WEAPON_GUN];
         reloadTime[WEAPON_AUTO_GUN] = baseReloadTimes[WEAPON_AUTO_GUN];
         reloadTime[WEAPON_GRENADE] = baseReloadTimes[WEAPON_GRENADE];
-
-        UpdateUI();
     }
 
     void Start()
     {
+        UpdateUI();
     }
 
     void Update()
@@ -200,14 +204,15 @@ public class ManageWeapons : MonoBehaviour
             TMP_Text tmpText = uiObject.GetComponent<TMP_Text>();
             if (tmpText != null)
             {
-                tmpText.text = weaponName[currentWeapon] + " Ammo: " + ammos[currentWeapon];
+                // Displays format like: GUN Ammo: 2 / 2
+                tmpText.text = weaponName[currentWeapon] + " Ammo: " + ammos[currentWeapon] + " / " + maxAmmos[currentWeapon];
             }
             else
             {
                 Text legacyText = uiObject.GetComponent<Text>();
                 if (legacyText != null)
                 {
-                    legacyText.text = weaponName[currentWeapon] + " Ammo: " + ammos[currentWeapon];
+                    legacyText.text = weaponName[currentWeapon] + " Ammo: " + ammos[currentWeapon] + " / " + maxAmmos[currentWeapon];
                 }
             }
         }

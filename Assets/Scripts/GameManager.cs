@@ -36,20 +36,20 @@ public class GameManager : MonoBehaviour
         UpdatePauseUI();
         UpdateHealthUI();
 
-        // Set default dropdown selections to the lowest option (index 0)
+        // Use SetValueWithoutNotify so callbacks don't fire recursively during startup
         if (maxAmmoDropdown != null)
         {
-            maxAmmoDropdown.value = 0;
+            maxAmmoDropdown.SetValueWithoutNotify(0);
             maxAmmoDropdown.onValueChanged.AddListener(OnMaxAmmoDropdownChanged);
         }
 
         if (reloadDropdown != null)
         {
-            reloadDropdown.value = 0;
+            reloadDropdown.SetValueWithoutNotify(0);
             reloadDropdown.onValueChanged.AddListener(OnReloadTimeDropdownChanged);
         }
 
-        // Initialize weapon stats to match the lowest defaults immediately
+        // Initialize weapon stats to match the lowest defaults safely
         ManageWeapons weapons = FindAnyObjectByType<ManageWeapons>();
         if (weapons != null)
         {
