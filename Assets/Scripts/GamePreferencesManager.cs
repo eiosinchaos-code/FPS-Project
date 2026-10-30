@@ -242,4 +242,10 @@ public class GamePreferencesManager : MonoBehaviour
         if (reloadTimeDropdown != null)
             OnReloadTimeChanged(reloadTimeDropdown.value);
     }
+    public void QuitGame()
+    {
+        Debug.Log("Quitting game...");
+
+        Application.Quit();
+    }
 }

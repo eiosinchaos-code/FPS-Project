@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/simple_ai.unity
     guid: 89b4b6b20c83a4042bc4b3b113d50906
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/training_camp.unity
     guid: 3ae5039b4b4c6414da4adde2d9b16e2f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/FSM.unity
     guid: 97754bbfa306f0c44891b11107316bd5
   - enabled: 1
