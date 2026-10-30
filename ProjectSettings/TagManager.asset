@@ -9,6 +9,8 @@ TagManager:
   - target
   - ammo_automatic_gun
   - ammo_grenade
+  - CinemachineTarget
+  - health_pack
   layers:
   - Default
   - TransparentFX
@@ -16,9 +18,9 @@ TagManager:
   - 
   - Water
   - UI
+  - Player
   - 
-  - 
-  - 
+  - Projectile
   - 
   - 
   - 

@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5791363042623700695}
   - component: {fileID: 6675963857137223858}
   - component: {fileID: 8540498886644164093}
-  - component: {fileID: 929363961150590195}
-  m_Layer: 0
+  - component: {fileID: -5535124109865422983}
+  m_Layer: 8
   m_Name: grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &929363961150590195
+--- !u!114 &-5535124109865422983
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,11 +150,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2706698784940402541}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 598a0e7ae0521e84e8cc212f9a5d092f, type: 3}
+  m_Script: {fileID: 11500000, guid: 8aa24f8421441a246bd4f4ecd35a3f67, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Grenade
-  grenadeTimer: 0
-  grenadeTimerStarted: 0
-  grenadeTimerLimit: 0
-  grenadeExplode: 0
+  m_EditorClassIdentifier: Assembly-CSharp::Grenade2
   explosion: {fileID: 7579372177096742542, guid: 2fc28c0fc1b14d54dad1ce843a820b3f, type: 3}
+  playerTag: Player

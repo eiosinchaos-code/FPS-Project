@@ -11,5 +11,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/training_camp.unity
     guid: 3ae5039b4b4c6414da4adde2d9b16e2f
+  - enabled: 1
+    path: Assets/Scenes/FSM.unity
+    guid: 97754bbfa306f0c44891b11107316bd5
+  - enabled: 1
+    path: Assets/Scenes/gameLevel.unity
+    guid: f6d174fbc18af4c4a9e74adf321b5ea4
+  - enabled: 1
+    path: Assets/Scenes/gameLevelAuto.unity
+    guid: 0f66da56291403a47a8ea4bde4fb6a32
+  - enabled: 1
+    path: Assets/Scenes/loseScene.unity
+    guid: 472d793f1b170374aa7ff30d9e26caaf
+  - enabled: 1
+    path: Assets/Scenes/winScene.unity
+    guid: f5834650f34875843a8c53aa167cc090
   m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

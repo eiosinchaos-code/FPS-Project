@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 2706768316191197916}
   - component: {fileID: 3265937346215548714}
   - component: {fileID: 6057523980380936323}
-  - component: {fileID: 8604556814142388821}
+  - component: {fileID: 2481998061581508280}
+  - component: {fileID: -6529699191965323788}
   m_Layer: 0
   m_Name: player_with_launcher
   m_TagString: Player
@@ -300,7 +301,7 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &8604556814142388821
+--- !u!114 &2481998061581508280
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -309,9 +310,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 347429771057752163}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 546c5e228e9dcbc4ba089c1370b2adbd, type: 3}
+  m_Script: {fileID: 11500000, guid: ae01541150f422c43b5eaa4792e96cbf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ManageCollisionWithPlayer
+  m_EditorClassIdentifier: Assembly-CSharp::ManageCollisionWithPlayer2
+--- !u!114 &-6529699191965323788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347429771057752163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51bf13fa96911894aa208130acddafcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManagePlayerHealth
 --- !u!1 &746290484796177432
 GameObject:
   m_ObjectHideFlags: 0
