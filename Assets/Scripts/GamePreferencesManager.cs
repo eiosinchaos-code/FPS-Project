@@ -2,11 +2,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections;
 
 public class GamePreferencesManager : MonoBehaviour
 {
     public static bool isPaused = true;
 
+    private bool isTransitioning = false;
+
+    [Header("Pause Settings")]
     public TextMeshProUGUI pauseInstructionText;
 
     [Header("Max Ammo Settings")]
@@ -21,49 +25,84 @@ public class GamePreferencesManager : MonoBehaviour
 
     void Start()
     {
+        // Start each scene paused.
         SetPaused(true);
 
+        // Register dropdown listeners.
         if (maxAmmoDropdown != null)
-            maxAmmoDropdown.onValueChanged.AddListener(OnMaxAmmoChanged);
+        {
+            maxAmmoDropdown.onValueChanged.AddListener(
+                OnMaxAmmoChanged
+            );
+        }
 
         if (reloadTimeDropdown != null)
-            reloadTimeDropdown.onValueChanged.AddListener(OnReloadTimeChanged);
+        {
+            reloadTimeDropdown.onValueChanged.AddListener(
+                OnReloadTimeChanged
+            );
+        }
 
         if (screenTranstion != null)
         {
-            screenTranstion.onValueChanged.AddListener(OnSceneSelected);
+            screenTranstion.onValueChanged.AddListener(
+                OnSceneSelected
+            );
+
             SetCurrentSceneDropdown();
         }
         else
         {
             Debug.LogWarning(
-                "GamePreferencesManager: screenTranstion dropdown is not assigned."
+                "GamePreferencesManager: Scene transition dropdown is not assigned."
             );
         }
 
         UpdateUI();
+
+        Debug.Log(
+            "GamePreferencesManager initialized. Game is paused."
+        );
     }
 
     void OnDestroy()
     {
+        // Remove dropdown listeners.
         if (maxAmmoDropdown != null)
-            maxAmmoDropdown.onValueChanged.RemoveListener(OnMaxAmmoChanged);
+        {
+            maxAmmoDropdown.onValueChanged.RemoveListener(
+                OnMaxAmmoChanged
+            );
+        }
 
         if (reloadTimeDropdown != null)
-            reloadTimeDropdown.onValueChanged.RemoveListener(OnReloadTimeChanged);
+        {
+            reloadTimeDropdown.onValueChanged.RemoveListener(
+                OnReloadTimeChanged
+            );
+        }
 
         if (screenTranstion != null)
-            screenTranstion.onValueChanged.RemoveListener(OnSceneSelected);
+        {
+            screenTranstion.onValueChanged.RemoveListener(
+                OnSceneSelected
+            );
+        }
     }
 
     void Update()
     {
+        // P or Escape toggles pause.
         if (Input.GetKeyDown(KeyCode.P) ||
             Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
         }
     }
+
+    // =========================================
+    // PAUSE MANAGEMENT
+    // =========================================
 
     public void TogglePause()
     {
@@ -73,6 +112,7 @@ public class GamePreferencesManager : MonoBehaviour
     public void SetPaused(bool pauseState)
     {
         isPaused = pauseState;
+
         Time.timeScale = isPaused ? 0f : 1f;
 
         if (isPaused)
@@ -92,7 +132,15 @@ public class GamePreferencesManager : MonoBehaviour
                 ? "GAME PAUSED - Press P to Play"
                 : "Press P to Pause";
         }
+
+        Debug.Log(
+            isPaused ? "Game Paused" : "Game Resumed"
+        );
     }
+
+    // =========================================
+    // AMMUNITION SETTINGS
+    // =========================================
 
     public void OnMaxAmmoChanged(int index)
     {
@@ -115,6 +163,10 @@ public class GamePreferencesManager : MonoBehaviour
         }
     }
 
+    // =========================================
+    // RELOAD SETTINGS
+    // =========================================
+
     public void OnReloadTimeChanged(int index)
     {
         if (index == 0)
@@ -125,55 +177,78 @@ public class GamePreferencesManager : MonoBehaviour
             currentReloadMultiplier = 2.0f;
 
         if (maxAmmoDropdown != null)
+        {
             OnMaxAmmoChanged(maxAmmoDropdown.value);
+        }
     }
+
+    // =========================================
+    // SCENE DROPDOWN INITIALIZATION
+    // =========================================
 
     private void SetCurrentSceneDropdown()
     {
+        if (screenTranstion == null)
+            return;
+
         string currentScene =
             SceneManager.GetActiveScene().name;
 
+        Debug.Log(
+            "Initializing dropdown for scene: " + currentScene
+        );
+
         int sceneIndex = -1;
 
-        switch (currentScene)
+        // Find the current scene in the dropdown options.
+        for (int i = 0;
+             i < screenTranstion.options.Count;
+             i++)
         {
-            case "gameLevel":
-                sceneIndex = 0;
-                break;
+            string option =
+                screenTranstion.options[i].text.Trim();
 
-            case "gameLevelAuto":
-                sceneIndex = 1;
+            if (string.Equals(
+                option,
+                currentScene,
+                System.StringComparison.OrdinalIgnoreCase))
+            {
+                sceneIndex = i;
                 break;
-
-            case "loseScene":
-                sceneIndex = 2;
-                break;
-
-            case "winScene":
-                sceneIndex = 3;
-                break;
+            }
         }
 
-        if (sceneIndex >= 0 &&
-            sceneIndex < screenTranstion.options.Count)
+        if (sceneIndex >= 0)
         {
             screenTranstion.SetValueWithoutNotify(sceneIndex);
             screenTranstion.RefreshShownValue();
+
+            Debug.Log(
+                "Dropdown set to index: " + sceneIndex
+            );
         }
         else
         {
             Debug.LogWarning(
-                "Current scene '" + currentScene +
-                "' is not mapped to a valid dropdown option."
+                "Could not find scene '" + currentScene +
+                "' in the scene transition dropdown."
             );
         }
     }
 
+    // =========================================
+    // SCENE TRANSITIONS
+    // =========================================
+
+
     public void OnSceneSelected(int index)
     {
+        if (isTransitioning)
+            return;
+
         Debug.Log("Scene dropdown selected index: " + index);
 
-        string sceneToLoad;
+        string sceneToLoad = "";
 
         switch (index)
         {
@@ -193,10 +268,16 @@ public class GamePreferencesManager : MonoBehaviour
                 sceneToLoad = "winScene";
                 break;
 
+            case 4:
+                sceneToLoad = "offmesh";
+                break;
+
+            case 5:
+                sceneToLoad = "scene paths";
+                break;
+
             default:
-                Debug.LogWarning(
-                    "Invalid scene dropdown index: " + index
-                );
+                Debug.LogWarning("Invalid scene dropdown index: " + index);
                 return;
         }
 
@@ -207,41 +288,75 @@ public class GamePreferencesManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Loading scene: " + sceneToLoad);
+        isTransitioning = true;
 
-        // Restore normal time before changing scenes.
+        StartCoroutine(LoadSceneRoutine(sceneToLoad));
+    }
+
+    private IEnumerator LoadSceneRoutine(string sceneToLoad)
+    {
+        Debug.Log("Preparing transition to: " + sceneToLoad);
+
+        // Restore normal game state.
         Time.timeScale = 1f;
         isPaused = false;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Remove the persistent gameplay player when entering
-        // the Win or Lose screens.
-        if (sceneToLoad == "loseScene" ||
-            sceneToLoad == "winScene")
-        {
-            GameObject player =
-                GameObject.Find("FPSController");
+        // Find the existing player.
+        GameObject player = GameObject.Find("FPSController");
 
-            if (player != null)
+        // Fallback search in case the player has a different object name.
+        if (player == null)
+        {
+            FirstPersonController fpsController =
+                FindAnyObjectByType<FirstPersonController>();
+
+            if (fpsController != null)
             {
-                Debug.Log("Destroying persistent FPSController.");
-                Destroy(player);
+                player = fpsController.gameObject;
             }
         }
+
+        // Destroy the existing player on EVERY transition.
+        if (player != null)
+        {
+            Debug.Log("Destroying FPSController before scene transition.");
+
+            Destroy(player);
+        }
+
+        // Allow Unity to complete destruction before loading the next scene.
+        yield return null;
+
+        Debug.Log("Loading scene: " + sceneToLoad);
 
         SceneManager.LoadScene(sceneToLoad);
     }
 
+
+    // =========================================
+    // UI INITIALIZATION
+    // =========================================
+
     private void UpdateUI()
     {
         if (maxAmmoDropdown != null)
+        {
             OnMaxAmmoChanged(maxAmmoDropdown.value);
+        }
 
         if (reloadTimeDropdown != null)
+        {
             OnReloadTimeChanged(reloadTimeDropdown.value);
+        }
     }
+
+    // =========================================
+    // QUIT GAME
+    // =========================================
+
     public void QuitGame()
     {
         Debug.Log("Quitting game...");

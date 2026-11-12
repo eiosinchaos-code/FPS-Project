@@ -6,13 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/simple_ai.unity
+    path: Assets/Scenes/Old Scenes/simple_ai.unity
     guid: 89b4b6b20c83a4042bc4b3b113d50906
   - enabled: 0
-    path: Assets/Scenes/training_camp.unity
+    path: Assets/Scenes/Old Scenes/training_camp.unity
     guid: 3ae5039b4b4c6414da4adde2d9b16e2f
   - enabled: 0
-    path: Assets/Scenes/FSM.unity
+    path: Assets/Scenes/Old Scenes/FSM.unity
     guid: 97754bbfa306f0c44891b11107316bd5
   - enabled: 1
     path: Assets/Scenes/gameLevel.unity
@@ -26,6 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/winScene.unity
     guid: f5834650f34875843a8c53aa167cc090
+  - enabled: 1
+    path: Assets/Scenes/offmesh.unity
+    guid: 9f0457eb4cab84440b0ce716efb45224
+  - enabled: 1
+    path: Assets/Scenes/scene paths.unity
+    guid: 9eb6ca49076fc6e45b0faf5f2d431cc0
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -1290,7 +1290,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1901131700671041473, guid: d2a6d969a534c91418149b13abbb8e34, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1901131700671041473, guid: d2a6d969a534c91418149b13abbb8e34, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
