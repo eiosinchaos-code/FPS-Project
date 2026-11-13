@@ -665,7 +665,7 @@ MonoBehaviour:
   WP3: {fileID: 1624665286}
   WP4: {fileID: 1388392185}
   WayPoints: []
-  isWandering: 0
+  isWandering: 1
   isFollowingWayPoints: 1
   timer: 0
   wanderingTarget: {fileID: 0}

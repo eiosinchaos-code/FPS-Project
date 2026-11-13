@@ -728,7 +728,7 @@ MonoBehaviour:
     - m_Text: offmesh
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: scene paths
+    - m_Text: paths
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:

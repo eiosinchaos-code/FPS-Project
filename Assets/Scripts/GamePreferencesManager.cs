@@ -273,7 +273,7 @@ public class GamePreferencesManager : MonoBehaviour
                 break;
 
             case 5:
-                sceneToLoad = "scene paths";
+                sceneToLoad = "paths";
                 break;
 
             default:
