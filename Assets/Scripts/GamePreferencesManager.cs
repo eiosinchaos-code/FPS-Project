@@ -275,6 +275,12 @@ public class GamePreferencesManager : MonoBehaviour
             case 5:
                 sceneToLoad = "paths";
                 break;
+            case 6:
+                sceneToLoad = "chapter3";
+                break;
+            case 7:
+                sceneToLoad = "chapter4";
+                break;
 
             default:
                 Debug.LogWarning("Invalid scene dropdown index: " + index);

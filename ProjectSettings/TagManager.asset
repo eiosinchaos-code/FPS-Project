@@ -11,6 +11,7 @@ TagManager:
   - ammo_grenade
   - CinemachineTarget
   - health_pack
+  - BC
   layers:
   - Default
   - TransparentFX
